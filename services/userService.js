@@ -8,12 +8,13 @@ const sequelize = new Sequelize(
     seqConfig.password, 
     seqConfig
 );
+
 const users = sequelize.import("../models/user");
 
 const listUsers = (call) => {
 
     users.findAll({
-        attributes: ["id","firstName","lastName"]
+        attributes: ["id","firstName","lastName", "email"]
     })
     .then( (list) => {
         return call(list);

@@ -1,6 +1,6 @@
-var express = require('express')
+var express = require('express');
 const routeVersions = require("express-routes-versioning")();
-var router = express.Router()
+var router = express.Router();
 
 /**
  * Cargando servicios

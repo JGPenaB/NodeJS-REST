@@ -1,19 +1,20 @@
-const request = require('supertest');
+const request = require("supertest");
 const app = require("../driver");
 
-test('Expecting json response', async () => {
+describe("Testing api/users endpoint", () => {
     
-    await request(app)
-        .get('/users')
-        .expect(200)
-        .expect('Content-Type', /json/);
-});
+    it("Expecting JSON response", (done) => {
+        request(app)
+        .patch("/users")
+        .expect("Content-Type", /json/)
+        .end(done);
+    });
 
-test('Expecting user with ID field', async () => {
-    
-    await request(app)
-        .get('/users/1')
-        .expect(200)
-        .expect('Content-Type', /json/)
-        .expect(200,{content: "Usuario 1", id:"1"});
+    it("Expecting 405 from PATCH method",  (done) => {
+        request(app)
+        .patch("/users")
+        .expect(405)
+        .end(done);
+    });
+
 });

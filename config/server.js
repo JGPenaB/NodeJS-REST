@@ -1,4 +1,4 @@
-const host = "localhost";
-const port = 3000;
+const host = process.env.SERVER_HOST;
+const port = process.env.SERVER_PORT;
 
 module.exports = {host,port};

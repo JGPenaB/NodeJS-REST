@@ -13,16 +13,20 @@ app.use(hateoasLinks);
 app.use("/", homeRoutes);
 app.use("/users", userRoutes);
 
+
+/**
+ * Si el recurso no existe, devuelve 404
+ */
 app.get("*", (req, res) => {
     res.status(404);
+    res.header("Content-Type", "application/json");
     res.json({
         name: "Error 404",
         data: {
             content: "Page not found",
-            method: "get"
+            method: "GET"
         }
     });
-
 });
 
 module.exports = app;

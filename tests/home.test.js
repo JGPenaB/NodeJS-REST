@@ -1,10 +1,12 @@
-const request = require('supertest');
+const request = require("supertest");
 const app = require("../driver");
 
-test('Expecting json response', async () => {
+describe("Testing api/ endpoint", () => {
     
-    await request(app)
-        .get('/')
-        .expect(200)
-        .expect('Content-Type', /json/);
+    it("Expecting JSON response", (done) => {
+        request(app)
+        .get("/")
+        .expect("Content-Type", /json/)
+        .end(done);
+    });
 });

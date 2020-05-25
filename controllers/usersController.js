@@ -16,7 +16,6 @@ const getUsers = (req, res, next) => {
                     title: `Get user ${element.dataValues.id}`,
                     href: `http://${serverConfig.host}:${serverConfig.port}/users/${element.dataValues.id}`
                 });
-                //element.dataValues.href = `http://${serverConfig.host}:${serverConfig.port}/users/${element.dataValues.id}`;
             });
 
             res.status(200);
@@ -31,7 +30,6 @@ const getUsers = (req, res, next) => {
         }
         
     });
-    //res.json({content: "Lista de usuarios"});
 }
 
 
@@ -40,23 +38,24 @@ const getUserByID = (req, res, next) => {
     userService.getUserByID(req.params.id, (response) => {
         if(response !== null){
             let links = [];
+            let uri = `http://${serverConfig.host}:${serverConfig.port}/users/${response.dataValues.id}`;
 
             links.push({
                 rel: "self",
                 method: "GET",
-                href: `http://${serverConfig.host}:${serverConfig.port}/users/${response.dataValues.id}`
+                href: uri
             });
 
             links.push({
                 rel: "update",
                 method: "PUT",
-                href: `http://${serverConfig.host}:${serverConfig.port}/users/${response.dataValues.id}`
+                href: uri
             });
 
             links.push({
                 rel: "delete",
                 method: "DELETE",
-                href: `http://${serverConfig.host}:${serverConfig.port}/users/${response.dataValues.id}`
+                href: uri
             });
 
             res.status(200);
@@ -70,8 +69,6 @@ const getUserByID = (req, res, next) => {
             res.json({});
         }
     });
-
-    //res.json({content: "Usuario "+req.params.id, id: req.params.id});
 }
 
 
