@@ -1,4 +1,7 @@
 const app = require("./driver");
-const port = 3000;
+const config = require("./config/server");
 
-app.listen(port, () => console.log(`Listening at http://localhost:${port}`));
+var server = app.listen(config.port, config.host, () => {
+    console.log(`Listening at http://${server.address().address}:${config.port}`);
+});
+
