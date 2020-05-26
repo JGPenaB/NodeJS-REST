@@ -4,7 +4,7 @@
   "description": "API RESTful con Express, Sequelize y Postgres",
   "main": "main.js",
   "scripts": {
-    "test": "cross-env NODE_ENV=test && jest --verbose --runInBand --detectOpenHandles",
+    "test": "sequelize-cli db:seed:all && cross-env NODE_ENV=test && jest --verbose --runInBand --detectOpenHandles --forceExit && sequelize-cli db:seed:undo:all",
     "dev": "cross-env NODE_ENV=development node main.js",
     "prod": "cross-env NODE_ENV=production node main.js",
     "migrate": "sequelize-cli db:migrate",
@@ -19,6 +19,7 @@
     "express": "^4.17.1",
     "express-hateoas-links": "^1.1.0",
     "express-routes-versioning": "^1.0.1",
+    "jsonwebtoken": "^8.5.1",
     "pg": "^8.2.1",
     "pg-hstore": "^2.3.3",
     "sequelize": "^5.21.10",

@@ -9,7 +9,7 @@ const sequelize = new Sequelize(
     seqConfig
 );
 
-const users = sequelize.import("../models/user");
+const users = sequelize.import("../database/models/user");
 
 const listUsers = (call) => {
 
