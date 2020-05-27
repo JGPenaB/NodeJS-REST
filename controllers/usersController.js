@@ -26,7 +26,12 @@ const getUsers = (req, res, next) => {
             }, links);
         }else{
             res.status(404);
-            res.json({});
+            res.header("Content-Type", "application/problem+json");
+            res.json({
+                title: "Users not found",
+                detail: "No users could be found in the system",
+                status: 404
+            });
         }
         
     });
@@ -66,7 +71,12 @@ const getUserByID = (req, res, next) => {
             }, links);
         }else{
             res.status(404);
-            res.json({});
+            res.header("Content-Type", "application/problem+json");
+            res.json({
+                title: "User not found",
+                detail: "The user could not be found",
+                status: 404
+            });
         }
     });
 }

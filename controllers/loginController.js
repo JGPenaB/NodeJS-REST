@@ -18,8 +18,13 @@ const Login = (req, res, next) => {
                 }
             });
         }else{
-            res.status(404);
-            res.json({});
+            res.status(401);
+            res.header("Content-Type", "application/problem+json");
+            res.json({
+                title: "Login failed",
+                detail: "The provided email is not in use.",
+                status: 401
+            });
         }
         
     });

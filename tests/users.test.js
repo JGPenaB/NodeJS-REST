@@ -31,10 +31,10 @@ describe("Testing api/users endpoint", () => {
         .expect(405)
         .expect("Allow", "GET, POST")
         .expect( (res) => {
-            let body = res.body.data;
-            if(body.content !== "Method not allowed")
-                throw new Error("Content field does not contain the description of the error code.");
-            if(body.method !== "PATCH")
+            let body = res.body;
+            if(body.title !== "Method not allowed")
+                throw new Error("Title field does not contain the description of the error code.");
+            if(body.detail !== "The method PATCH is not allowed for this resource")
                 throw new Error("Method field does not match the used method.");
         })
         .end(done);

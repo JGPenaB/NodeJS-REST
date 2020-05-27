@@ -19,7 +19,16 @@ const isAuthorized = (methods) => (req, res, next) => {
             }
 
             jwt.verify(token, secretKey, (err, decoded) => {
-                if(decoded){
+                if(err){
+                    res.status(401);
+                    //res.set("Allow",methods.join(", "));
+                    res.header("Content-Type", "application/problem+json");
+                    res.json({
+                        title: "Invalid token",
+                        detail: "The provided token has expired or is not valid.",
+                        status: 401
+                    });
+                }else{
                     req.tokenData = decoded;
                 }
             });
@@ -28,19 +37,18 @@ const isAuthorized = (methods) => (req, res, next) => {
             if(req.tokenData){
                 return next();
             }
+            
+        }else{
+            res.status(401);
+            //res.set("Allow",methods.join(", "));
+            res.header("Content-Type", "application/problem+json");
+            res.json({
+                title: "Missing token",
+                detail: "The request does not contain an authorization header with a valid token.",
+                status: 401
+            });
+            return;
         }
-
-        res.status(401);
-        //res.set("Allow",methods.join(", "));
-        res.header("Content-Type", "application/json");
-        res.json({
-            name: "Error 401",
-            data:{
-                content: "Unauthorized",
-                method: req.method
-            }
-        });
-        return;
     }
 
     //Caso contrario, no hace falta verificacion

@@ -11,13 +11,11 @@ const validMethods = (validMethods = ["GET"]) => (req, res, next) => {
     
     res.status(405);
     res.set("Allow",validMethods.join(", "));
-    res.header("Content-Type", "application/json");
+    res.header("Content-Type", "application/problem+json");
     res.json({
-        name: "Error 405",
-        data:{
-            content: "Method not allowed",
-            method: req.method
-        }
+        title: "Method not allowed",
+        detail: `The method ${req.method} is not allowed for this resource`,
+        status: 405
     });
 };
 
