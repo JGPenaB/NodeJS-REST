@@ -11,13 +11,21 @@ const authorization = require("../middlewares/isAuthorized").isAuthorized;
  */
 
 // api/users/
-router.all("/", methods(["GET","POST"]), routeVersions({
+
+//Verifica si el cliente usó un método válido
+router.all("/", methods(["HEAD","GET","POST"]));
+
+//Si todo está en orden, ejecuta una función dependiendo del método
+router.get("/", routeVersions({
     "1.0.0": userController.getUsers,
 
 }));
 
 // api/users/id
-router.all('/:id', methods(["GET","PUT","DELETE"]), authorization(["GET"]), routeVersions({
+//Verifica si el cliente está autorizado a ejecutar un método
+router.all('/:id', methods(["HEAD","GET","PUT","DELETE"]), authorization(["GET"]));
+
+router.get('/:id', routeVersions({
     "1.0.0": userController.getUserByID,
 
 }));

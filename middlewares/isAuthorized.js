@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const secretKey = require("../config/jwt");
 
 /**
- * Middleware que verifica si el cliente puede acceder a un URI con el método deseado.
+ * @description Middleware que verifica si el cliente puede acceder a un URI con el método deseado.
  * Si no está autorizado (token faltante o expirado), devuelve error 401
  * 
  * @param methods Arreglo que contiene los métodos que requieran verificación
@@ -37,7 +37,7 @@ const isAuthorized = (methods) => (req, res, next) => {
             if(req.tokenData){
                 return next();
             }
-            
+
         }else{
             res.status(401);
             //res.set("Allow",methods.join(", "));

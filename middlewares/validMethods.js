@@ -1,10 +1,10 @@
 /**
- * Middleware que verifica si el método usado es válido para un URI.
+ * @description Middleware que verifica si el método usado es válido para un URI.
  * Si no es válido, devuelve una respuesta 405 personalizada
  * 
- * @param validMethods Arreglo que contiene los métodos válidos. Por defecto es ["GET"]
+ * @param validMethods Arreglo que contiene los métodos válidos.
  */
-const validMethods = (validMethods = ["GET"]) => (req, res, next) => {
+const validMethods = (validMethods = ["GET", "HEAD"]) => (req, res, next) => {
     if (validMethods.includes(req.method)){
         return next();
     }

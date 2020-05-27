@@ -9,7 +9,6 @@ const loginController = require("../controllers/loginController");
  */
 router.all("/", methods(["POST"]), routeVersions({
     "1.0.0": loginController.Login,
-
 }));
 
 module.exports = router
