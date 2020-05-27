@@ -5,9 +5,10 @@
  * @param validMethods Arreglo que contiene los métodos válidos. Por defecto es ["GET"]
  */
 const validMethods = (validMethods = ["GET"]) => (req, res, next) => {
-    if (validMethods.includes(req.method)) 
+    if (validMethods.includes(req.method)){
         return next();
-
+    }
+    
     res.status(405);
     res.set("Allow",validMethods.join(", "));
     res.header("Content-Type", "application/json");

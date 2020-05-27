@@ -37,4 +37,24 @@ const getUserByID = (userID, call) => {
 
 };
 
-module.exports = { listUsers, getUserByID };
+
+const getUserByEmail = (userEmail, call) => {
+
+    console.log(userEmail);
+    users.findAll({
+        limit: 1,
+        attributes: ["id", "email", "password"],
+        where: {
+            email: userEmail
+        }
+    })
+    .then( (userFound) => {
+        return call(userFound);
+    })
+    .catch( (error) => {
+        console.log("Error: " + error);
+    });
+
+};
+
+module.exports = { listUsers, getUserByID, getUserByEmail };

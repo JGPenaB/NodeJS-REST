@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const routeVersions = require("express-routes-versioning")();
 const userController = require("../controllers/usersController");
-const methods = require("../middlewares/validMethods.js").validMethods;
+const methods = require("../middlewares/validMethods").validMethods;
+const authorization = require("../middlewares/isAuthorized").isAuthorized;
 
 
 /**
@@ -16,7 +17,7 @@ router.all("/", methods(["GET","POST"]), routeVersions({
 }));
 
 // api/users/id
-router.all('/:id', methods(["GET","PUT","DELETE"]), routeVersions({
+router.all('/:id', methods(["GET","PUT","DELETE"]), authorization(["GET"]), routeVersions({
     "1.0.0": userController.getUserByID,
 
 }));

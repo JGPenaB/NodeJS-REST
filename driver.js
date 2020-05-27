@@ -2,7 +2,14 @@ const express = require("express");
 const app = express();
 const hateoasLinks = require("express-hateoas-links");
 const userRoutes = require("./routes/user");
+const loginRoutes = require("./routes/login");
 const homeRoutes = require("./routes/home");
+const bodyParser = require("body-parser");
+
+//Usando middleware para extraer el body del request
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
 
 //Sobreescribe la función res.json con una función nueva que acepta un arreglo de links
 app.use(hateoasLinks);
@@ -11,6 +18,7 @@ app.use(hateoasLinks);
  * Cargando rutas
  */
 app.use("/", homeRoutes);
+app.use("/login", loginRoutes);
 app.use("/users", userRoutes);
 
 
