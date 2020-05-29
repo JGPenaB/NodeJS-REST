@@ -21,8 +21,8 @@ const isAuthorized = (methods) => (req, res, next) => {
             jwt.verify(token, secretKey, (err, decoded) => {
                 if(err){
                     res.status(401);
-                    //res.set("Allow",methods.join(", "));
                     res.header("Content-Type", "application/problem+json");
+                    res.header("WWW-Authenticate", "Bearer");
                     res.json({
                         title: "Invalid token",
                         detail: "The provided token has expired or is not valid.",
@@ -40,8 +40,8 @@ const isAuthorized = (methods) => (req, res, next) => {
 
         }else{
             res.status(401);
-            //res.set("Allow",methods.join(", "));
             res.header("Content-Type", "application/problem+json");
+            res.header("WWW-Authenticate", "Bearer");
             res.json({
                 title: "Missing token",
                 detail: "The request does not contain an authorization header with a valid token.",

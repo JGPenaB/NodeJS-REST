@@ -27,13 +27,11 @@ app.use("/users", userRoutes);
  */
 app.get("*", (req, res) => {
     res.status(404);
-    res.header("Content-Type", "application/json");
+    res.header("Content-Type", "application/problem+json");
     res.json({
-        name: "Error 404",
-        data: {
-            content: "Page not found",
-            method: "GET"
-        }
+        title: "Resource not found",
+        detail: "The requested resource could not be found",
+        status: 404
     });
 });
 

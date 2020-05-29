@@ -3,11 +3,10 @@ const app = require("../driver");
 
 describe("Testing api/ endpoint", () => {
 
-    it("Expecting JSON response", (done) => {
+    it("GET /: Expecting JSON response", (done) => {
         request(app)
         .get("/")
         .expect("Content-Type", /json/)
         .end(done);
-        
     });
 });
