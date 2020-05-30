@@ -1,17 +1,17 @@
 const express = require("express");
 const app = express();
 const hateoasLinks = require("express-hateoas-links");
+const articleRoutes = require("./routes/article");
 const userRoutes = require("./routes/user");
 const loginRoutes = require("./routes/login");
 const homeRoutes = require("./routes/home");
 const bodyParser = require("body-parser");
 
-//Usando middleware para extraer el body del request
+//Usando middleware para extraer el cuerpo de la petición
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-
-//Sobreescribe la función res.json con una función nueva que acepta un arreglo de links
+//Sobreescribe la función res.json() con una función nueva que acepta un arreglo de links
 app.use(hateoasLinks);
 
 /**
@@ -20,6 +20,7 @@ app.use(hateoasLinks);
 app.use("/", homeRoutes);
 app.use("/login", loginRoutes);
 app.use("/users", userRoutes);
+app.use("/articles", articleRoutes);
 
 
 /**

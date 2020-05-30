@@ -1,20 +1,9 @@
-const Sequelize = require("sequelize");
-const env = process.env.NODE_ENV || "development";
-const seqConfig = require("../config/sequelize.js")[env];
 const bcrypt = require("bcrypt");
-
-const sequelize = new Sequelize(
-    seqConfig.database, 
-    seqConfig.username,
-    seqConfig.password, 
-    seqConfig
-);
-
-const users = sequelize.import("../database/models/user");
+const models = require("../database/models");
 
 const listUsers = (call) => {
 
-    users.findAll({
+    models.User.findAll({
         attributes: ["id","firstName","lastName", "email"]
     })
     .then( (list) => {
@@ -29,7 +18,7 @@ const listUsers = (call) => {
 
 const getUserByID = (userID, call) => {
 
-    users.findByPk(userID)
+    models.User.findByPk(userID)
     .then( (userFound) => {
         return call(userFound);
     })
@@ -40,7 +29,7 @@ const getUserByID = (userID, call) => {
 };
 
 const getUserByEmail = (userEmail, call) => {
-    users.findAll({
+    models.User.findAll({
         limit: 1,
         attributes: ["id", "email", "password"],
         where: {
@@ -61,7 +50,7 @@ const getUserByEmail = (userEmail, call) => {
 const createUser = (userData, call) => {
 
     bcrypt.hash(userData.password, 10, function(err, hash) {
-        users.create({
+        models.User.create({
             firstName: userData.firstName,
             lastName: userData.lastName,
             email: userData.email,
@@ -83,12 +72,10 @@ const deleteUser = (userID, call) => {
 
         //En caso que el usuario no haya sido localizado
         if(response.dataValues === undefined){
-            return call({
-                status: 404
-            });
+            return call(null);
         }
 
-        users.destroy({
+        models.User.destroy({
             where: {
                 id: userID
             },
@@ -105,41 +92,47 @@ const deleteUser = (userID, call) => {
         })
         .catch( (error) => {
             console.log(error.message);
-            return call({
-                status: 500
-            });
+            return call(error);
         });
     });
 };
 
 const updateUser = (userID, userData, call) => {
 
-    users.update({
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        email: userData.email,
-        password: userData.password
-    },{
-        where: {
-            id: userID
-        },
-        returning: true,
-        plain: true
-    })
-    .then( (response) => {
-        let data = response[1].dataValues;
+    getUserByID(userID, (response) => {
+        if(response === null){
+            return call(null);
+        }
 
-        return call({
-            id: data.id,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            email: data.email,
+        models.User.update({
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            email: userData.email,
+            password: userData.password
+        },{
+            where: {
+                id: userID
+            },
+            returning: true,
+            plain: true
+        })
+        .then( (response) => {
+            
+            let data = response[1].dataValues;
+    
+            return call({
+                id: data.id,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                email: data.email,
+            });
+        })
+        .catch( (error) => {
+            console.log(error.message);
+            return call(error);
         });
     })
-    .catch( (error) => {
-        console.log(error.message);
-        return call(error.message);
-    });
+
 };
 
 module.exports = { listUsers, getUserByID, getUserByEmail, createUser, updateUser, deleteUser };

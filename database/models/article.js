@@ -1,6 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const Article = sequelize.define('Article', {
+  const Article = sequelize.define("Article", {
     Title: DataTypes.STRING,
     Slug: DataTypes.STRING,
     Content: DataTypes.TEXT,
@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   Article.associate = function(models) {
     // associations can be defined here
-    models.Article.hasMany(models.User, {foreignKey: "Author", targetKey: "id"});
+    Article.belongsTo(models.User, {foreignKey: "Author", as: "authorData"});
   };
   return Article;
 };

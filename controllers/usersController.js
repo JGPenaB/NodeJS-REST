@@ -4,16 +4,18 @@ const serverConfig = require("../config/server.js");
 const getUsers = (req, res, next) => {
 
     userService.listUsers( (response) => {
-        if(response && response.length){
+        
+        if(response && response[0] !== undefined){
 
             //Prepara links para los recursos
             let links = [];
 
             response.forEach(element => {
-                links.push({
+                element.dataValues.Links = [{
+                    rel: "self",
                     title: `${element.dataValues.firstName} ${element.dataValues.lastName}`,
                     href: `http://${serverConfig.host}:${serverConfig.port}/users/${element.dataValues.id}`
-                });
+                }];
             });
 
             res.status(200);
@@ -21,14 +23,22 @@ const getUsers = (req, res, next) => {
             res.json({
                 name: "Users",
                 data: JSON.parse(JSON.stringify(response, null, 4))
-            }, links);
-        }else{
+            });
+        }else if(response === null || !response.length){
             res.status(404);
             res.header("Content-Type", "application/problem+json");
             res.json({
                 title: "Users not found",
                 detail: "No users could be found in the system",
                 status: 404
+            });
+        }else{
+            res.status(500);
+            res.header("Content-Type", "application/problem+json");
+            res.json({
+                title: "Internal Server Error",
+                detail: "An error has occurred while processing the request",
+                status: 500
             });
         }
         
@@ -50,7 +60,7 @@ const createUser = (req, res, next) => {
     //Verifica si el usuario ya existe
     userService.getUserByEmail(req.body.email, (response) => {
         
-        if(response && response.length){
+        if(response !== null && response.dataValues !== undefined){
             res.status(409);
             res.header("Content-Type", "application/problem+json");
             res.json({
@@ -64,12 +74,12 @@ const createUser = (req, res, next) => {
         //Sino, crea un objeto con los datos del usuario
         userService.createUser(userData, (createResponse) => {
             if(createResponse.dataValues === undefined){
-                res.status(409);
+                res.status(500);
                 res.header("Content-Type", "application/problem+json");
                 res.json({
-                    title: "User creation failed",
-                    detail: createResponse,
-                    status: 409
+                    title: "Internal Server Error",
+                    detail: "An error has occurred while processing the request",
+                    status: 500
                 });
                 return;
             }
@@ -98,7 +108,7 @@ const createUser = (req, res, next) => {
 const getUserByID = (req, res, next) => {
 
     userService.getUserByID(req.params.id, (response) => {
-        if(response !== null){
+        if(response){
             let links = [];
 
             links.push({
@@ -112,13 +122,21 @@ const getUserByID = (req, res, next) => {
                 name: "User",
                 data: JSON.parse(JSON.stringify(response, null, 4))
             }, links);
-        }else{
+        }else if(response === null){
             res.status(404);
             res.header("Content-Type", "application/problem+json");
             res.json({
                 title: "User not found",
-                detail: "The requested user could not be located",
+                detail: "The requested user could not be found",
                 status: 404
+            });
+        }else{
+            res.status(500);
+            res.header("Content-Type", "application/problem+json");
+            res.json({
+                title: "Internal Server Error",
+                detail: "An error has occurred while processing the request",
+                status: 500
             });
         }
     });
@@ -139,35 +157,29 @@ const deleteUserByID = (req, res, next) => {
     }
 
     userService.deleteUser(req.params.id, (response) => {
-        if(response.id !== undefined){
+        if(response && response.id !== undefined){
             res.status(200);
             res.header("Content-Type", "application/json");
             res.json({
                 name: "User",
                 data: JSON.parse(JSON.stringify(response, null, 4))
             });
+        }else if(response === null){
+            res.status(404);
+            res.header("Content-Type", "application/problem+json");
+            res.json({
+                title: "User not found",
+                detail: "The requested user could not be found",
+                status: 404
+            });
         }else{
-            switch(response.status){
-                case 500:
-                    res.status(500);
-                    res.header("Content-Type", "application/problem+json");
-                    res.json({
-                        title: "Internal Server Error",
-                        detail: "An error has occurred while processing the request",
-                        status: 500
-                    });
-                break;
-
-                case 404:
-                    res.status(404);
-                    res.header("Content-Type", "application/problem+json");
-                    res.json({
-                        title: "User not found",
-                        detail: "The requested user could not be located",
-                        status: 404
-                    });
-                break;
-            }
+            res.status(500);
+            res.header("Content-Type", "application/problem+json");
+            res.json({
+                title: "Internal Server Error",
+                detail: "An error has occurred while processing the request",
+                status: 500
+            });
         }
     });
 }
@@ -188,7 +200,6 @@ const updateUserByID = (req, res, next) => {
 
     let links = [];
     
-
     //Objeto con los datos actualizados
     let userData = {
         firstName: req.body.firstName,
@@ -205,7 +216,7 @@ const updateUserByID = (req, res, next) => {
                 res.header("Content-Type", "application/problem+json");
                 res.json({
                     title: "Update failed",
-                    detail: "The email already exists in the database",
+                    detail: "The email already is already in use",
                     status: 409
                 });
                 return;
@@ -214,8 +225,7 @@ const updateUserByID = (req, res, next) => {
 
         //Todo bien, actualiza
         userService.updateUser(req.params.id, userData, (response) => {
-
-            if(response.id !== undefined){
+            if(response && response.id !== undefined){
                 links.push({
                     rel: "self",
                     href: `http://${serverConfig.host}:${serverConfig.port}/users/${response.id}`
@@ -227,6 +237,14 @@ const updateUserByID = (req, res, next) => {
                     name: "User",
                     data: JSON.parse(JSON.stringify(response, null, 4))
                 }, links);
+            }else if(response === null){
+                res.status(404);
+                res.header("Content-Type", "application/problem+json");
+                res.json({
+                    title: "User not found",
+                    detail: "The requested user could not be found",
+                    status: 404
+                });
             }else{
                 res.status(500);
                 res.header("Content-Type", "application/problem+json");
