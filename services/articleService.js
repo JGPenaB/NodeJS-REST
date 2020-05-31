@@ -3,17 +3,19 @@ const models = require("../database/models");
 const listArticles = (call) => {
     models.Article.findAll({
         attributes: ["id","Author","Title","Slug"],
-        include: {
+        include: [{
             model: models.User,
             as: "authorData",
             attributes: ["firstName", "lastName", "email"]
-        }
+        },{
+            model: models.Comment,
+            attributes: ["id", "Content"]
+        }]
     })
     .then( (list) => {
         return call(list);
     })
     .catch( (error) => {
-        console.log("dasdasdasdasdasdasd")
         console.log(error.message);
         return call(error);
     });
