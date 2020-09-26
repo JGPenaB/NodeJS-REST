@@ -4,7 +4,14 @@ const models = require("../database/models");
 const listUsers = (call) => {
 
     models.User.findAll({
-        attributes: ["id","firstName","lastName", "email"]
+        attributes: ["id","firstName","lastName", "email"],
+        include: [{
+            model: models.Article,
+            attributes: ["id", "Title", "Slug"]
+        },{
+            model: models.Comment,
+            attributes: ["id", "Content"]
+        }]
     })
     .then( (list) => {
         return call(list);

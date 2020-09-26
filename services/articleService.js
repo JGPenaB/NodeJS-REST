@@ -10,6 +10,12 @@ const listArticles = (call) => {
         },{
             model: models.Comment,
             attributes: ["id", "Content"]
+        },{
+            model: models.Tags,
+            attributes: ["id", "tagName"],
+            through: {
+                attributes: []
+            }
         }]
     })
     .then( (list) => {

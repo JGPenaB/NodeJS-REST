@@ -3,6 +3,7 @@ const app = express();
 const hateoasLinks = require("express-hateoas-links");
 const articleRoutes = require("./routes/article");
 const commentRoutes = require("./routes/comment");
+const tagRoutes = require("./routes/tag");
 const userRoutes = require("./routes/user");
 const loginRoutes = require("./routes/login");
 const homeRoutes = require("./routes/home");
@@ -23,6 +24,7 @@ app.use("/login", loginRoutes);
 app.use("/users", userRoutes);
 app.use("/articles", articleRoutes);
 app.use("/comments", commentRoutes);
+app.use("/tags", tagRoutes);
 
 
 /**
